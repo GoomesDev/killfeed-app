@@ -1,0 +1,38 @@
+# Dependências
+node_modules/
+
+# Expo / Builds temporários
+.expo/
+dist/
+web-build/
+
+# Configurações locais do Expo
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Logs de gerenciadores de pacote
+yarn-error.log
+yarn-debug.log*
+npm-debug.log*
+lerna-debug.log*
+
+# Variáveis de ambiente (Segurança!)
+.env
+.env.local
+.env.production
+.env*.local
+
+# macOS / Windows / IDEs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
