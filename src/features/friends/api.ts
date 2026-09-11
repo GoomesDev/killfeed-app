@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { api } from '@/lib/api/client';
@@ -21,16 +21,27 @@ export const friendsResponseSchema = z.object({
     killfeed_count: z.number().int().nonnegative(),
     fetched_at: z.string(),
     profiles_complete: z.boolean(),
+    current_page: z.number().int().positive(),
+    per_page: z.literal(25),
+    last_page: z.number().int().positive(),
+    has_more: z.boolean(),
   }),
 });
 
 export type Friend = z.infer<typeof friendSchema>;
 
-export const friendsQueryOptions = () => queryOptions({
-  queryKey: ['friends'],
-  queryFn: async ({ signal }) => {
-    const response = await api.get<unknown>(endpoints.friends, { signal });
-    return friendsResponseSchema.parse(response.data);
-  },
-  staleTime: 5 * 60 * 1000,
-});
+export const friendsQueryOptions = () =>
+  infiniteQueryOptions({
+    queryKey: ['friends'],
+    initialPageParam: 1,
+    queryFn: async ({ pageParam, signal }) => {
+      const response = await api.get<unknown>(endpoints.friends, {
+        params: { page: pageParam },
+        signal,
+      });
+      return friendsResponseSchema.parse(response.data);
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.has_more ? lastPage.meta.current_page + 1 : undefined,
+    staleTime: 5 * 60 * 1000,
+  });

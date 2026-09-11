@@ -1,4 +1,5 @@
 import { create } from 'axios';
+
 import { getSessionToken } from '@/features/auth/credential';
 
 export const api = create({
@@ -10,11 +11,15 @@ export const api = create({
   },
 });
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
   if (!config.baseURL || !/^https?:\/\//.test(config.baseURL)) {
-    throw new Error('Configure EXPO_PUBLIC_API_URL com a origem HTTP(S) do Laravel.');
+    throw new Error(
+      'Configure EXPO_PUBLIC_API_URL com a origem HTTP(S) do Laravel.',
+    );
   }
-  const token = getSessionToken();
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  const token = await getSessionToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });

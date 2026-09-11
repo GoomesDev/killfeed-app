@@ -23,7 +23,9 @@ export function profileQueryOptions(userId: number) {
     queryKey: ['profile', userId],
     queryFn: async ({ signal }) => {
       z.number().int().positive().parse(userId);
-      const response = await api.get<unknown>(endpoints.profile(userId), { signal });
+      const response = await api.get<unknown>(endpoints.profile(userId), {
+        signal,
+      });
       return profileSchema.parse(response.data);
     },
   });

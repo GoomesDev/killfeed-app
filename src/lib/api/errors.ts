@@ -17,15 +17,26 @@ const statusMessages: Record<number, string> = {
 
 export function getApiErrorMessage(error: unknown): string {
   if (!isAxiosError(error)) {
-    return error instanceof Error ? error.message : 'Algo deu errado. Tente novamente.';
+    return error instanceof Error
+      ? error.message
+      : 'Algo deu errado. Tente novamente.';
   }
   const parsed = errorBody.safeParse(error.response?.data);
   if (parsed.success) {
     const { message, error: detail, errors } = parsed.data;
-    const validation = Object.values(errors ?? {}).flat().join('\n');
+    const validation = Object.values(errors ?? {})
+      .flat()
+      .join('\n');
     const summary = message || detail;
-    if (summary || validation) return [summary, validation].filter(Boolean).join('\n');
+    if (summary || validation) {
+      return [summary, validation].filter(Boolean).join('\n');
+    }
   }
-  if (!error.response) return 'Sem conexão com o servidor. Tente novamente.';
-  return statusMessages[error.response.status] ?? `Falha na requisição (${error.response.status}).`;
+  if (!error.response) {
+    return 'Sem conexão com o servidor. Tente novamente.';
+  }
+  return (
+    statusMessages[error.response.status] ??
+    `Falha na requisição (${error.response.status}).`
+  );
 }
