@@ -1,31 +1,7 @@
 import { create } from 'zustand';
 
-interface User {
-  id: number;
-  username: string;
-}
-
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-
-  login: (user: User) => void;
-  logout: () => void;
-}
-
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-
-  login: (user) =>
-    set({
-      user,
-      isAuthenticated: true,
-    }),
-
-  logout: () =>
-    set({
-      user: null,
-      isAuthenticated: false,
-    }),
-}));
+export const useAuthStore = create<{
+  status: 'restoring' | 'idle' | 'opening' | 'exchanging' | 'authenticated';
+  message: string | null;
+  userId: number | null;
+}>(() => ({ status: 'restoring', message: null, userId: null }));
